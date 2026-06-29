@@ -1,0 +1,47 @@
+# ───────── Secrets & environment ─────────
+.env
+*.env
+!.env.example
+
+# ───────── Python ─────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ───────── Virtual environments ─────────
+.venv/
+venv/
+env/
+ENV/
+
+# ───────── Django ─────────
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+backend/staticfiles/
+media/
+backend/media/
+
+# Seed/import data dumps (regenerate via load scripts)
+backend/data/*.json
+
+# ───────── ML model binaries (regenerate with the train_*.py scripts) ─────────
+*.joblib
+*.pkl
+
+# ───────── OS / editors ─────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ───────── Node (if any frontend tooling is added) ─────────
+node_modules/
+
+# ───────── Logs ─────────
+*.log

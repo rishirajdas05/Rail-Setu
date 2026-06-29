@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailSetu · My account</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css?v=24">
+  <script src="/static/js/theme.js?v=1"></script>
+  <script src="/static/js/i18n.js?v=2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark">
+          <path d="M6 3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M3 10h18" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="8" cy="13.5" r="1.4" fill="currentColor"/>
+          <circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>
+          <path d="M7 17l-2 3M17 17l2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Rail<strong>Setu</strong></span>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link" data-i18n="nav.search">Search</a>
+        <a href="/status/" class="nav-link" data-i18n="nav.status">Live status</a>
+        <a href="/board/" class="nav-link" data-i18n="nav.board">Station board</a>
+        <a href="/coaches/" class="nav-link" data-i18n="nav.coaches">Coaches</a>
+        <a href="/predict/" class="nav-link" data-i18n="nav.predict">Predict</a>
+        <a href="/pnr/" class="nav-link" id="pnr-link">Check PNR</a>
+        <a href="/dashboard/" class="nav-link" id="nav-dash" hidden>Dashboard</a>
+        <select class="lang-select" id="lang-select" aria-label="Language"></select>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <a href="/account/" class="btn-ghost" id="signin-link">Sign in</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap account-wrap">
+    <div class="state" id="ac-loading">Loading your account&hellip;</div>
+    <div class="state" id="ac-error" hidden></div>
+
+    <div id="ac-body" hidden>
+      <section class="ac-profile">
+        <div class="ac-profile-banner">
+          <div class="ac-avatar" id="ac-avatar">R</div>
+          <div class="ac-id">
+            <h1 class="ac-name" id="ac-username"></h1>
+            <p class="ac-email" id="ac-email"></p>
+          </div>
+          <a class="ac-dash" id="ac-dash" href="/dashboard/" hidden>Dashboard</a>
+          <button class="ac-signout" id="ac-signout">Sign out</button>
+        </div>
+        <div class="ac-stats">
+          <div class="ac-stat">
+            <span class="ac-stat-num" id="ac-stat-total">0</span>
+            <span class="ac-stat-lbl">Total bookings</span>
+          </div>
+          <div class="ac-stat">
+            <span class="ac-stat-num" id="ac-stat-cnf">0</span>
+            <span class="ac-stat-lbl">Confirmed</span>
+          </div>
+          <div class="ac-stat">
+            <span class="ac-stat-num" id="ac-stat-upc">0</span>
+            <span class="ac-stat-lbl">Upcoming</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="ac-bookings">
+        <div class="ac-bookings-head">
+          <h2>Your bookings</h2>
+          <span class="ac-count" id="ac-count"></span>
+        </div>
+        <div id="ac-list"></div>
+        <div class="state" id="ac-empty" hidden>No bookings yet. <a href="/">Search trains</a> to make your first booking.</div>
+        <button class="ac-more" id="ac-more" hidden>Load more</button>
+      </section>
+
+      <section class="ac-saved">
+        <div class="ac-bookings-head">
+          <h2>Saved</h2>
+          <span class="ac-count" id="ac-saved-count"></span>
+        </div>
+        <div id="ac-saved-list"></div>
+        <div class="state" id="ac-saved-empty" hidden>Nothing saved yet. Tap ☆ on a train or a search to keep it here.</div>
+      </section>
+
+      <section class="ac-alerts">
+        <div class="ac-bookings-head">
+          <h2>Price &amp; seat alerts</h2>
+          <span class="ac-count" id="ac-alerts-count"></span>
+        </div>
+        <div id="ac-alerts-list"></div>
+        <div class="state" id="ac-alerts-empty" hidden>No alerts yet. Open a train and set a price or seat alert.</div>
+      </section>
+
+      <section class="ac-security">
+        <h2 class="ac-sec-h">Change password</h2>
+        <form id="pw-form" class="pw-form" autocomplete="off">
+          <div class="auth-field">
+            <label for="pw-current">Current password</label>
+            <div class="pw-wrap">
+              <input type="password" id="pw-current" required autocomplete="current-password">
+              <button type="button" class="pw-toggle" data-pw-toggle="pw-current" aria-label="Show password" aria-pressed="false">
+                <svg class="pw-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="pw-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.3 3.9M6.6 6.6A18 18 0 0 0 1 12s4 7 11 7a11 11 0 0 0 3.4-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="pw-new">New password</label>
+            <div class="pw-wrap">
+              <input type="password" id="pw-new" required minlength="8" autocomplete="new-password">
+              <button type="button" class="pw-toggle" data-pw-toggle="pw-new" aria-label="Show password" aria-pressed="false">
+                <svg class="pw-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="pw-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.3 3.9M6.6 6.6A18 18 0 0 0 1 12s4 7 11 7a11 11 0 0 0 3.4-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+              </button>
+            </div>
+            <span class="auth-hint">At least 8 characters.</span>
+          </div>
+          <p class="pw-msg" id="pw-msg" hidden></p>
+          <button type="submit" class="pw-save" id="pw-save">Save password</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span class="brand small">Rail<strong>Setu</strong></span>
+      <span class="footer-note">Bookings are simulated for demonstration. No real tickets are issued.</span>
+    </div>
+  </footer>
+
+  <script src="/static/js/auth.js?v=2"></script>
+  <script src="/static/js/pwtoggle.js?v=3"></script>
+  <script src="/static/js/saved.js?v=1"></script>
+  <script src="/static/js/alerts.js?v=1"></script>
+  <script src="/static/js/account.js?v=8"></script>
+  <script src="/static/js/chatbot.js?v=9"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailSetu · Sign in</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css?v=24">
+  <script src="/static/js/theme.js?v=1"></script>
+  <script src="/static/js/i18n.js?v=2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark">
+          <path d="M6 3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M3 10h18" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="8" cy="13.5" r="1.4" fill="currentColor"/>
+          <circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>
+          <path d="M7 17l-2 3M17 17l2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Rail<strong>Setu</strong></span>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link" data-i18n="nav.search">Search</a>
+        <a href="/status/" class="nav-link" data-i18n="nav.status">Live status</a>
+        <a href="/board/" class="nav-link" data-i18n="nav.board">Station board</a>
+        <a href="/predict/" class="nav-link" data-i18n="nav.predict">Predict</a>
+        <a href="/pnr/" class="nav-link" id="pnr-link">Check PNR</a>
+        <a href="/dashboard/" class="nav-link" id="nav-dash" hidden>Dashboard</a>
+        <select class="lang-select" id="lang-select" aria-label="Language"></select>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <a href="/login/" class="btn-ghost" id="signin-link">Sign in</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card" id="auth-card">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab is-active" data-mode="login" id="tab-login">Sign in</button>
+        <button type="button" class="auth-tab" data-mode="signup" id="tab-signup">Create account</button>
+      </div>
+
+      <div class="auth-intro">
+        <h1 class="auth-title" id="auth-title">Welcome back</h1>
+        <p class="auth-subtitle" id="auth-subtitle">Sign in to manage your bookings and trips.</p>
+      </div>
+
+      <form id="auth-form">
+        <div class="auth-field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+
+        <div class="auth-field" id="name-field" hidden>
+          <label for="fullname">Full name</label>
+          <input type="text" id="fullname" name="name" autocomplete="name">
+        </div>
+
+        <div class="auth-field" id="email-field" hidden>
+          <label for="email">Email <span class="opt">(optional)</span></label>
+          <input type="email" id="email" name="email" autocomplete="email">
+        </div>
+
+        <div class="auth-field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" autocomplete="current-password" required minlength="8">
+            <button type="button" class="pw-toggle" data-pw-toggle="password" aria-label="Show password" aria-pressed="false">
+              <svg class="pw-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="pw-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3l18 18"/><path d="M10.6 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.3 3.9M6.6 6.6A18 18 0 0 0 1 12s4 7 11 7a11 11 0 0 0 3.4-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+              </svg>
+            </button>
+          </div>
+          <span class="auth-hint" id="pw-hint" hidden>At least 8 characters.</span>
+        </div>
+
+        <div class="auth-field" id="confirm-field" hidden>
+          <label for="password2">Confirm password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password2" name="password2" autocomplete="new-password" minlength="8">
+            <button type="button" class="pw-toggle" data-pw-toggle="password2" aria-label="Show password" aria-pressed="false">
+              <svg class="pw-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="pw-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 3l18 18"/><path d="M10.6 5.1A11 11 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.3 3.9M6.6 6.6A18 18 0 0 0 1 12s4 7 11 7a11 11 0 0 0 3.4-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="auth-error" id="auth-error" role="alert"></p>
+
+        <button type="submit" class="auth-submit" id="auth-submit">Sign in</button>
+      </form>
+
+      <div id="auth-google-area">
+        <div class="auth-or"><span>or</span></div>
+        <a class="google-btn-link" id="google-link" href="/auth/google/login/">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62Z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18Z"/><path fill="#FBBC05" d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33Z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z"/></svg>
+          <span>Continue with Google</span>
+        </a>
+      </div>
+
+      <p class="auth-switch" id="auth-switch"></p>
+    </div>
+  </main>
+
+  <script src="/static/js/auth.js?v=2"></script>
+  <script src="/static/js/pwtoggle.js?v=3"></script>
+  <script src="/static/js/login.js?v=6"></script>
+</body>
+</html>

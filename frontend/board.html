@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailSetu · Station board</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css?v=24">
+  <script src="/static/js/theme.js?v=1"></script>
+  <script src="/static/js/i18n.js?v=2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark">
+          <path d="M6 3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M3 10h18" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="8" cy="13.5" r="1.4" fill="currentColor"/>
+          <circle cx="16" cy="13.5" r="1.4" fill="currentColor"/>
+          <path d="M7 17l-2 3M17 17l2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <span>Rail<strong>Setu</strong></span>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link" data-i18n="nav.search">Search</a>
+        <a href="/status/" class="nav-link" data-i18n="nav.status">Live status</a>
+        <a href="/board/" class="nav-link is-active" data-i18n="nav.board">Station board</a>
+        <a href="/coaches/" class="nav-link" data-i18n="nav.coaches">Coaches</a>
+        <a href="/predict/" class="nav-link" data-i18n="nav.predict">Predict</a>
+        <a href="/pnr/" class="nav-link" id="pnr-link">Check PNR</a>
+        <a href="/dashboard/" class="nav-link" id="nav-dash" hidden>Dashboard</a>
+        <select class="lang-select" id="lang-select" aria-label="Language"></select>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme"><svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <a href="/login/" class="btn-ghost" id="signin-link">Sign in</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="status-hero">
+      <div class="wrap">
+        <p class="eyebrow">Station board</p>
+        <h1 class="hero-title">Trains at a station</h1>
+        <p class="hero-sub">Pick a station to see the trains scheduled through it next, ordered from now.</p>
+
+        <form class="status-bar" id="board-form" autocomplete="off">
+          <div class="status-field" style="flex:2 1 0; position:relative;">
+            <label for="station-input">Station</label>
+            <input type="text" id="station-input" placeholder="e.g. Gwalior or GWL" autocomplete="off">
+            <ul class="suggest" id="station-suggest" role="listbox"></ul>
+          </div>
+          <button type="submit" class="track-btn" id="board-btn">Show board</button>
+        </form>
+        <p class="form-error" id="board-error" role="alert"></p>
+      </div>
+    </section>
+
+    <section class="wrap status-wrap" id="board-result" hidden>
+      <div class="state" id="bd-loading" hidden>Loading board&hellip;</div>
+      <div class="state" id="bd-empty" hidden></div>
+      <div id="bd-card" hidden></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span class="brand small">Rail<strong>Setu</strong></span>
+    </div>
+  </footer>
+
+  <script src="/static/js/auth.js?v=2"></script>
+  <script src="/static/js/board.js?v=2"></script>
+  <script src="/static/js/chatbot.js?v=9"></script>
+</body>
+</html>
