@@ -25,8 +25,10 @@ backend/staticfiles/
 media/
 backend/media/
 
-# Seed/import data dumps (regenerate via load scripts)
-backend/data/*.json
+# Seed data: commit stations/trains (needed for deploy); schedules.json is 79MB
+# so keep it out of the repo (the build script imports it only if present; use
+# Git LFS or a one-off Render job if you need station-board schedules live).
+backend/data/schedules.json
 
 # ───────── ML model binaries (regenerate with the train_*.py scripts) ─────────
 *.joblib

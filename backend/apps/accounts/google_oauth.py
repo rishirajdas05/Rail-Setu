@@ -22,6 +22,7 @@ import urllib.parse
 import requests
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import signing
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.html import escape
@@ -29,6 +30,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+STATE_SALT = "railsetu.google.oauth.state"
+STATE_MAX_AGE = 600  # seconds the sign-in round trip may take
 
 
 def _redirect_uri(request):
@@ -40,9 +43,10 @@ def google_login(request):
     client_id = getattr(settings, "GOOGLE_CLIENT_ID", "")
     if not client_id:
         return _fail("Google sign-in is not configured (GOOGLE_CLIENT_ID is missing).")
-    state = secrets.token_urlsafe(24)
-    request.session["g_oauth_state"] = state
-    request.session["g_oauth_next"] = request.GET.get("next", "/") or "/"
+    next_url = request.GET.get("next", "/") or "/"
+    # Signed, self-contained state: survives the round trip without needing the
+    # session cookie (which is easily lost across a localhost/127.0.0.1 host change).
+    state = signing.dumps({"n": secrets.token_urlsafe(16), "next": next_url}, salt=STATE_SALT)
     params = {
         "client_id": client_id,
         "redirect_uri": _redirect_uri(request),
@@ -59,9 +63,14 @@ def google_callback(request):
     if request.GET.get("error"):
         return _fail("Google sign-in was cancelled.")
 
-    state = request.GET.get("state")
-    if not state or state != request.session.get("g_oauth_state"):
+    state = request.GET.get("state") or ""
+    try:
+        state_data = signing.loads(state, salt=STATE_SALT, max_age=STATE_MAX_AGE)
+    except signing.SignatureExpired:
+        return _fail("Sign-in took too long. Please start again.")
+    except signing.BadSignature:
         return _fail("Sign-in could not be verified. Please try again.")
+    nxt = state_data.get("next", "/") or "/"
 
     code = request.GET.get("code")
     if not code:
@@ -118,8 +127,6 @@ def google_callback(request):
         user.last_name = (info.get("family_name") or "")[:150]
         user.save()
 
-    nxt = request.session.pop("g_oauth_next", "/") or "/"
-    request.session.pop("g_oauth_state", None)
     refresh = RefreshToken.for_user(user)
     return _success(str(refresh.access_token), str(refresh), user.username, nxt)
 

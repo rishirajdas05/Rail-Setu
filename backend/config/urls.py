@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import TemplateView
 
@@ -8,6 +9,7 @@ from apps.availability import AvailabilityView, WeekAvailabilityView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/health/", lambda r: JsonResponse({"status": "ok"}), name="health"),
     path("auth/google/login/", google_oauth.google_login, name="google-login"),
     path("auth/google/callback/", google_oauth.google_callback, name="google-callback"),
     path("api/auth/", include("apps.accounts.urls")),

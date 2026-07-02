@@ -1,0 +1,80 @@
+# Render Blueprint for RailSetu.
+# Two web services (Django + FastAPI ML) and a managed Postgres database.
+# In the Render dashboard: New + -> Blueprint -> point at this repo.
+# After the first deploy, fill the "sync: false" secrets in each service's
+# Environment tab (Groq key, Google OAuth, email), then trigger a redeploy.
+
+databases:
+  - name: railsetu-db
+    plan: free
+    databaseName: railsetu
+    user: railsetu
+
+services:
+  # ---- FastAPI ML microservice (predictions) ----
+  - type: web
+    name: railsetu-ml
+    runtime: python
+    rootDir: ml-service
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python train.py && python train_delay.py && python train_rank.py"
+    startCommand: "uvicorn app:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+  # ---- Django + DRF web app (also serves the frontend) ----
+  - type: web
+    name: railsetu
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: "bash build.sh"
+    startCommand: "gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --timeout 120"
+    healthCheckPath: /api/health/
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: railsetu-db
+          property: connectionString
+      - key: ML_SERVICE_URL
+        fromService:
+          type: web
+          name: railsetu-ml
+          property: host
+      - key: SELF_BASE_URL
+        fromService:
+          type: web
+          name: railsetu
+          property: host
+      # ---- secrets: set these in the dashboard after the first deploy ----
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: "llama-3.3-70b-versatile"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.console.EmailBackend"
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "1"
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        value: "RailSetu <no-reply@railsetu.local>"
