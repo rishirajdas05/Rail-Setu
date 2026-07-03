@@ -53,11 +53,8 @@ class Command(BaseCommand):
             src = (props.get("from_station_code") or "").strip().upper()
             dst = (props.get("to_station_code") or "").strip().upper()
 
-            if not number or not name:
+            if not number or not name or len(number) > 20:
                 skipped_bad += 1
-                continue
-            if src not in station_codes or dst not in station_codes:
-                skipped_missing += 1
                 continue
 
             _, was_created = Train.objects.update_or_create(
