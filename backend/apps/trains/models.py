@@ -34,7 +34,7 @@ class Stop(models.Model):
     departure = models.TimeField(null=True, blank=True)
     day_offset = models.PositiveIntegerField(default=0)
     distance_km = models.PositiveIntegerField(default=0)
-    platform = models.CharField(max_length=10, blank=True)
+    platform = models.CharField(max_length=16, blank=True)
 
     class Meta:
         ordering = ["train", "sequence"]
