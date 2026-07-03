@@ -56,16 +56,22 @@ class Command(BaseCommand):
             if not number or not name or len(number) > 20:
                 skipped_bad += 1
                 continue
-
-            _, was_created = Train.objects.update_or_create(
-                number=number,
-                defaults={
-                    "name": name,
-                    "train_type": (props.get("type") or "").strip(),
-                    "source_id": src,
-                    "destination_id": dst,
-                },
-            )
+            if not src or not dst or src not in station_codes or dst not in station_codes:
+                skipped_missing += 1
+                continue
+            try:
+                _, was_created = Train.objects.update_or_create(
+                    number=number,
+                    defaults={
+                        "name": name,
+                        "train_type": (props.get("type") or "").strip(),
+                        "source_id": src,
+                        "destination_id": dst,
+                    },
+                )
+            except Exception:
+                skipped_missing += 1
+                continue
             created += was_created
             updated += not was_created
 
