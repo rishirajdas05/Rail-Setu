@@ -4,7 +4,7 @@ from apps.common import Quota, TravelClass
 
 
 class Train(models.Model):
-    number = models.CharField(max_length=10, primary_key=True)  # e.g. "12951"
+    number = models.CharField(max_length=20, primary_key=True)  # e.g. "12951"
     name = models.CharField(max_length=120)
     train_type = models.CharField(max_length=40, blank=True)
     source = models.ForeignKey(
