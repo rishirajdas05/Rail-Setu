@@ -12,3 +12,6 @@ fi
 if [ -f data/trains.json ]; then
   python manage.py load_trains
 fi
+if [ -f data/schedules.json ]; then
+  python manage.py load_schedule
+fi
