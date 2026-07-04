@@ -1,14 +1,8 @@
 # backend/apps/trains/management/commands/load_trains.py
 """
 Load trains from the DataMeet trains.json (GeoJSON FeatureCollection).
-
-Usage:
-    python manage.py load_trains                   # defaults to data/trains.json
-    python manage.py load_trains path/to/file.json
-
-Stations MUST be loaded first, because each train points at a source and
-destination station via foreign keys. Trains whose source or destination
-station code is missing from the Station table are skipped and counted.
+Bulk-insert version: fast enough for remote Postgres (Supabase) on deploy.
+Stations MUST be loaded first (trains reference station codes via FK).
 """
 
 import json
@@ -20,7 +14,7 @@ from apps.trains.models import Train
 
 
 class Command(BaseCommand):
-    help = "Load trains from the DataMeet trains.json file."
+    help = "Load trains from the DataMeet trains.json file (bulk insert)."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -38,14 +32,14 @@ class Command(BaseCommand):
         except json.JSONDecodeError as e:
             raise CommandError(f"Invalid JSON in {path}: {e}")
 
-        # Pull existing station codes once so FK checks are in-memory, not per-row queries.
         station_codes = set(Station.objects.values_list("code", flat=True))
         if not station_codes:
             raise CommandError("No stations found. Run load_stations first.")
 
         features = data.get("features", []) if isinstance(data, dict) else data
 
-        created = updated = skipped_missing = skipped_bad = 0
+        objs = {}
+        skipped_missing = skipped_bad = 0
         for feat in features:
             props = feat.get("properties", {}) or {}
             number = (props.get("number") or "").strip()
@@ -59,23 +53,22 @@ class Command(BaseCommand):
             if not src or not dst or src not in station_codes or dst not in station_codes:
                 skipped_missing += 1
                 continue
-            try:
-                _, was_created = Train.objects.update_or_create(
-                    number=number,
-                    defaults={
-                        "name": name,
-                        "train_type": (props.get("type") or "").strip(),
-                        "source_id": src,
-                        "destination_id": dst,
-                    },
-                )
-            except Exception:
-                skipped_missing += 1
-                continue
-            created += was_created
-            updated += not was_created
+
+            objs[number] = Train(
+                number=number,
+                name=name,
+                train_type=(props.get("type") or "").strip(),
+                source_id=src,
+                destination_id=dst,
+            )
+
+        Train.objects.bulk_create(
+            list(objs.values()),
+            batch_size=1000,
+            ignore_conflicts=True,
+        )
 
         self.stdout.write(self.style.SUCCESS(
-            f"Trains done. Created {created}, updated {updated}, "
+            f"Trains done. Inserted {len(objs)}, "
             f"skipped {skipped_missing} (missing station), {skipped_bad} (bad row)."
         ))
