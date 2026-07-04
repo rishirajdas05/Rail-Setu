@@ -42,19 +42,23 @@ class Command(BaseCommand):
             props = feat.get("properties", {}) or {}
             code = (props.get("code") or "").strip().upper()
             name = (props.get("name") or "").strip()
-            if not code or not name:
+            if not code or not name or len(code) > 20:
                 skipped += 1
                 continue
 
             coords = (feat.get("geometry") or {}).get("coordinates") or [None, None]
             lng, lat = (coords + [None, None])[:2]
 
-            # de-duplicate on code (last one wins), so bulk_create won't hit conflicts
+            zone = (props.get("zone") or "").strip()
+            if len(zone) > 20:
+                zone = zone[:20]
+
+            # de-duplicate on code (last one wins) so bulk_create won't conflict
             objs[code] = Station(
                 code=code,
-                name=name,
-                zone=(props.get("zone") or "").strip(),
-                state=(props.get("state") or "").strip(),
+                name=name[:120],
+                zone=zone,
+                state=(props.get("state") or "").strip()[:60],
                 latitude=lat,
                 longitude=lng,
             )
