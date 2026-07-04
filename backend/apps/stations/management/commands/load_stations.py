@@ -1,19 +1,11 @@
 # backend/apps/stations/management/commands/load_stations.py
 """
 Load stations from the DataMeet stations.json (GeoJSON FeatureCollection).
+Bulk-insert version: fast enough for remote Postgres (Supabase) on deploy.
 
 Usage:
     python manage.py load_stations                 # defaults to data/stations.json
     python manage.py load_stations path/to/file.json
-
-Each GeoJSON feature looks like:
-    {
-      "geometry": {"type": "Point", "coordinates": [lng, lat]},
-      "properties": {"state": "...", "code": "...", "name": "...", "zone": "..."}
-    }
-
-Note: GeoJSON coordinates are [longitude, latitude] in that order.
-Re-running is safe; existing stations (matched on code) are updated.
 """
 
 import json
@@ -24,7 +16,7 @@ from apps.stations.models import Station
 
 
 class Command(BaseCommand):
-    help = "Load stations from the DataMeet stations.json file."
+    help = "Load stations from the DataMeet stations.json file (bulk insert)."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -44,7 +36,8 @@ class Command(BaseCommand):
 
         features = data.get("features", []) if isinstance(data, dict) else data
 
-        created = updated = skipped = 0
+        objs = {}
+        skipped = 0
         for feat in features:
             props = feat.get("properties", {}) or {}
             code = (props.get("code") or "").strip().upper()
@@ -56,19 +49,22 @@ class Command(BaseCommand):
             coords = (feat.get("geometry") or {}).get("coordinates") or [None, None]
             lng, lat = (coords + [None, None])[:2]
 
-            _, was_created = Station.objects.update_or_create(
+            # de-duplicate on code (last one wins), so bulk_create won't hit conflicts
+            objs[code] = Station(
                 code=code,
-                defaults={
-                    "name": name,
-                    "zone": (props.get("zone") or "").strip(),
-                    "state": (props.get("state") or "").strip(),
-                    "latitude": lat,
-                    "longitude": lng,
-                },
+                name=name,
+                zone=(props.get("zone") or "").strip(),
+                state=(props.get("state") or "").strip(),
+                latitude=lat,
+                longitude=lng,
             )
-            created += was_created
-            updated += not was_created
+
+        Station.objects.bulk_create(
+            list(objs.values()),
+            batch_size=1000,
+            ignore_conflicts=True,
+        )
 
         self.stdout.write(self.style.SUCCESS(
-            f"Stations done. Created {created}, updated {updated}, skipped {skipped}."
+            f"Stations done. Inserted {len(objs)}, skipped {skipped}."
         ))
