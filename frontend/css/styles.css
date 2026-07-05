@@ -1026,10 +1026,11 @@ button:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--blue-100, #eef
 .rs-select-pop {
   position: absolute; top: calc(100% + 6px); left: 0;
   min-width: 100%; width: max-content; max-width: 360px;
-  z-index: 50; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  z-index: 1000; background: var(--card); border: 1px solid var(--line); border-radius: 12px;
   box-shadow: 0 14px 40px rgba(20, 40, 90, 0.18); padding: 8px;
   max-height: 320px; overflow-y: auto; animation: calIn 0.12s ease-out;
 }
+.rs-select.open { z-index: 1000; }
 .rs-option {
   display: block; width: 100%; text-align: left; border: none; background: none;
   cursor: pointer; font: inherit; font-size: 0.95rem; color: var(--ink);
@@ -1037,8 +1038,8 @@ button:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--blue-100, #eef
   margin-bottom: 3px; line-height: 1.2;
 }
 .rs-option:last-child { margin-bottom: 0; }
-.rs-option:hover { background: var(--blue-100, #eef2fb); }
-.rs-option.is-sel { background: var(--blue-600, #1f3b8c); color: #fff; font-weight: 600; }
+.rs-option:hover { background: var(--blue-100); }
+.rs-option.is-sel { background: var(--blue-600); color: #fff; font-weight: 600; }
 
 /* ===== predict form: distribute fields evenly across the full card width ===== */
 .pr-bar { gap: 18px; align-items: flex-end; }
@@ -1944,6 +1945,9 @@ button.cz-coach { font-family: var(--body); cursor: default; }
 [data-theme="dark"] .sortdd-menu,
 [data-theme="dark"] .rs-option,
 [data-theme="dark"] .cal-pop { background: var(--card); color: var(--ink); border-color: var(--line); }
+[data-theme="dark"] .rs-select-pop { background: var(--card); border-color: var(--line); box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55); }
+[data-theme="dark"] .rs-option:hover { background: var(--hover); }
+[data-theme="dark"] .rs-option.is-sel { background: var(--blue-600); color: #0d1420; }
 
 /* theme toggle button (lives in the dark navbar in both themes) */
 .theme-toggle {
