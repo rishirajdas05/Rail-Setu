@@ -86,7 +86,7 @@
     $("td-name").textContent = d.name;
     $("td-route").textContent =
       `${d.source_name} (${d.source_code}) → ${d.destination_name} (${d.destination_code})`;
-    document.title = `${d.number} ${d.name} — RailSetu`;
+    document.title = `${d.number} ${d.name} · RailSetu`;
 
     // remember this train for the homepage "recently viewed" strip
     try {
