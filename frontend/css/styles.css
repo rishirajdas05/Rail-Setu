@@ -1039,7 +1039,8 @@ button:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--blue-100, #eef
 }
 .rs-option:last-child { margin-bottom: 0; }
 .rs-option:hover { background: var(--blue-100); }
-.rs-option.is-sel { background: var(--blue-600); color: #fff; font-weight: 600; }
+.rs-option.is-sel { background: var(--blue-100); color: var(--blue-600); font-weight: 600; }
+.rs-option.is-sel:hover { background: var(--blue-100); }
 
 /* ===== predict form: distribute fields evenly across the full card width ===== */
 .pr-bar { gap: 18px; align-items: flex-end; }
@@ -1947,7 +1948,8 @@ button.cz-coach { font-family: var(--body); cursor: default; }
 [data-theme="dark"] .cal-pop { background: var(--card); color: var(--ink); border-color: var(--line); }
 [data-theme="dark"] .rs-select-pop { background: var(--card); border-color: var(--line); box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55); }
 [data-theme="dark"] .rs-option:hover { background: var(--hover); }
-[data-theme="dark"] .rs-option.is-sel { background: var(--blue-600); color: #0d1420; }
+[data-theme="dark"] .rs-option.is-sel { background: var(--blue-100); color: var(--blue-700); font-weight: 600; }
+[data-theme="dark"] .rs-option.is-sel:hover { background: var(--blue-100); }
 
 /* theme toggle button (lives in the dark navbar in both themes) */
 .theme-toggle {
