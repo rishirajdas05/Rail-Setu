@@ -2086,3 +2086,14 @@ button.cz-coach { font-family: var(--body); cursor: default; }
 [data-theme="dark"] .ac-cancel:hover { background: #3a1f1c; border-color: #c0392b; }
 
 [data-theme="dark"] .td-sched-head { background: #131b28; }
+/* ===== navbar: breathing room + graceful wrap on inner pages ===== */
+.header-nav { flex-wrap: wrap; gap: 4px; row-gap: 6px; }
+.header-nav .nav-link { padding: 8px 10px; }
+.header-nav .lang-select,
+.header-nav #lang-dd,
+.header-nav .theme-toggle { margin-left: 6px; }
+.header-nav .btn-ghost { margin-left: 4px; }
+@media (max-width: 900px) {
+  .header-inner { height: auto; padding: 10px 0; }
+  .header-nav { justify-content: flex-end; }
+}
