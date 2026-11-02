@@ -1,4 +1,4 @@
-from django.contrib import admin
+﻿from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import TemplateView
@@ -6,6 +6,8 @@ from django.views.generic import TemplateView
 from apps.ml_views import ConfirmationPredictView, DelayPredictView, RankPredictView
 from apps.accounts import google_oauth
 from apps.availability import AvailabilityView, WeekAvailabilityView
+from apps.trains.route_views import train_route
+from apps.trains.radar_views import radar
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -13,6 +15,8 @@ urlpatterns = [
     path("auth/google/login/", google_oauth.google_login, name="google-login"),
     path("auth/google/callback/", google_oauth.google_callback, name="google-callback"),
     path("api/auth/", include("apps.accounts.urls")),
+    path("api/trains/<str:number>/route/", train_route, name="train-route"),
+    path("api/radar/", radar, name="radar"),
     path("api/", include("apps.search.urls")),
     path("api/", include("apps.stations.urls")),
     path("api/", include("apps.trains.urls")),
@@ -28,6 +32,7 @@ urlpatterns = [
     path("api/availability/week/", WeekAvailabilityView.as_view(), name="availability-week"),
     path("api/availability/", AvailabilityView.as_view(), name="availability"),
     path("status/", TemplateView.as_view(template_name="status.html"), name="status"),
+    path("radar/", TemplateView.as_view(template_name="radar.html"), name="radar-page"),
     path("train/<str:number>/", TemplateView.as_view(template_name="train.html"), name="train-page"),
     path("login/", TemplateView.as_view(template_name="login.html"), name="login-page"),
     path("book/", TemplateView.as_view(template_name="book.html"), name="book-page"),
@@ -39,3 +44,4 @@ urlpatterns = [
     path("coaches/", TemplateView.as_view(template_name="coaches.html"), name="coaches-page"),
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
 ]
+

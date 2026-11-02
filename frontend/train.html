@@ -1,14 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RailSetu · Train schedule</title>
+  <title>RailSetu Â· Train schedule</title>
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css?v=15">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="/static/js/theme.js?v=1"></script>
   <script src="/static/js/i18n.js?v=3"></script>
 </head>
@@ -28,6 +32,7 @@
       <nav class="header-nav">
         <a href="/" class="nav-link" data-i18n="nav.search">Search</a>
         <a href="/status/" class="nav-link" data-i18n="nav.status">Live status</a>
+        <a href="/radar/" class="nav-link">Rail Radar</a>
         <a href="/board/" class="nav-link" data-i18n="nav.board">Station board</a>
         <a href="/coaches/" class="nav-link" data-i18n="nav.coaches">Coaches</a>
         <a href="/predict/" class="nav-link" data-i18n="nav.predict">Predict</a>
@@ -55,7 +60,7 @@
         <div class="td-meta">
           <span class="td-type" id="td-type" hidden></span>
           <button type="button" class="td-book" id="td-book" hidden>Book this journey &rsaquo;</button>
-          <button type="button" class="td-save" id="td-save" aria-pressed="false" hidden>☆ Save</button>
+          <button type="button" class="td-save" id="td-save" aria-pressed="false" hidden>â˜† Save</button>
           <button type="button" class="td-live" id="td-live">Live status &rsaquo;</button>
           <button type="button" class="td-pdf" id="td-pdf">Download schedule</button>
         </div>
@@ -67,6 +72,12 @@
       </section>
 
       <section class="td-delay" id="td-delay" hidden></section>
+
+      <section class="td-map">
+        <h2>Route map</h2>
+        <div id="rail-map" style="height:420px;border-radius:12px;overflow:hidden"></div>
+        <p id="rail-status-text" class="tr-note"></p>
+      </section>
 
       <div class="td-quota" id="td-quota" hidden>
         <span class="td-quota-lbl">Quota</span>
@@ -87,7 +98,7 @@
             </select>
           </label>
           <label class="al-fld" id="al-thr-wrap" hidden>
-            <span>Target fare (₹)</span>
+            <span>Target fare (â‚¹)</span>
             <input type="number" id="al-threshold" min="1" step="5" placeholder="e.g. 1200">
           </label>
           <label class="al-fld">
@@ -139,5 +150,22 @@
   <script src="/static/js/dropdown.js?v=1"></script>
   <script src="/static/js/train.js?v=13"></script>
   <script src="/static/js/chatbot.js?v=9"></script>
+  <script>window.RAILMAP = { number: (location.pathname.match(/\/train\/([^\/]+)/) || [])[1] || "", started: "today" };</script>
+  <script src="/static/js/railmap.js?v=12"></script>
+  <script>window.RAILMAP = { number: (location.pathname.match(/\/train\/([^\/]+)/) || [])[1] || "", started: "today" };</script>
+  <script src="/static/js/railmap.js?v=12"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
