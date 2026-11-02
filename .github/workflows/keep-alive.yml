@@ -1,0 +1,22 @@
+name: Keep Render services awake
+
+# Pings the RailSetu web and ML services so Render's free tier does not sleep them.
+# Scheduled in UTC. The window below is 03:30 to 18:30 UTC, which is roughly
+# 09:00 to 24:00 IST, so the services stay warm through the day and evening in
+# India and are allowed to sleep overnight (this conserves Render's monthly
+# free awake-hours instead of burning them at 3 AM).
+
+on:
+  schedule:
+    # Every 10 minutes, only during the hours listed (UTC).
+    - cron: "*/10 3-18 * * *"
+  workflow_dispatch:   # lets you run it manually from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping web service
+        run: curl -sS -o /dev/null -w "web %{http_code}\n" --max-time 60 https://railsetu.onrender.com/api/health/ || true
+      - name: Ping ML service
+        run: curl -sS -o /dev/null -w "ml %{http_code}\n" --max-time 60 https://railsetu-ml.onrender.com/health || true
