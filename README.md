@@ -3,6 +3,7 @@
 A full-stack, IRCTC/ixigo-style Indian Railways platform: search trains between stations, check live running status and PNR, view coach and platform layouts, predict waitlist confirmation with machine learning, book multi-passenger tickets, and chat with a multilingual assistant. Built as a three-tier system (Django + DRF API, a separate FastAPI machine-learning service, and a dependency-free vanilla JavaScript frontend) and deployed on Render with Supabase PostgreSQL.
 
 **Live demo:** https://railsetu.onrender.com
+**Rail Radar (live fleet map):** https://railsetu.onrender.com/radar/
 **ML service health:** https://railsetu-ml.onrender.com/health
 
 > Free-tier hosting note: the services sleep after inactivity, so the first request may take 30 to 60 seconds to wake. Give it a moment on the first load.
@@ -22,6 +23,10 @@ A full-stack, IRCTC/ixigo-style Indian Railways platform: search trains between 
 | Coach seat map | Confirmation predictor |
 | --- | --- |
 | ![Coach seat map](docs/coaches.png) | ![Predictor](docs/predict.png) |
+
+| Rail Radar (live fleet) | Single-train route map |
+| --- | --- |
+| ![Rail Radar](docs/radar.png) | ![Route map](docs/route.png) |
 
 ---
 
@@ -47,7 +52,7 @@ Three independently deployable tiers:
 
 - **Web tier** (`backend/`): Django + Django REST Framework. Serves the JSON API and the frontend via TemplateView. JWT auth, bookings, alerts, analytics, chatbot, i18n.
 - **ML tier** (`ml-service/`): a standalone FastAPI service hosting three scikit-learn models. Kept separate so the API stays responsive and the models can scale or be redeployed on their own. Django proxies to it and degrades gracefully (HTTP 503) when it is offline.
-- **Frontend** (`frontend/`): hand-written HTML, CSS and JavaScript with no build step. Dark/light theming, a custom dropdown and date picker, and on-demand translation.
+- **Frontend** (`frontend/`): hand-written HTML, CSS and JavaScript with no build step. Dark/light theming, a custom dropdown and date picker, on-demand translation, and interactive maps with Leaflet and MapTiler tiles.
 
 ---
 
@@ -69,6 +74,7 @@ Three models, each trained on synthetic data generated from domain rules, served
 
 - Train search between stations, with fastest/cheapest badges and an ML "Recommended" sort
 - Live running status and station board
+- Rail Radar: a live full-fleet map showing every running train as a directional arrow, with tap-to-reveal route line and timetable, plus a single-train route map with an interpolated current position
 - PNR status and waitlist confirmation prediction
 - Train detail: schedule, run days, coach position, platform, interior seat map
 - Multi-passenger booking with PDF e-tickets and booking/cancellation emails
@@ -83,10 +89,10 @@ Three models, each trained on synthetic data generated from domain rules, served
 ## Tech stack
 
 **Backend:** Python, Django, Django REST Framework, SimpleJWT, FastAPI, scikit-learn
-**Frontend:** vanilla HTML / CSS / JavaScript (no framework, no build step)
+**Frontend:** vanilla HTML / CSS / JavaScript (no framework, no build step), Leaflet maps
 **Database:** PostgreSQL (Supabase in production, SQLite for local dev)
 **Infra:** Render (two web services), WhiteNoise static serving, GitHub Actions keep-alive, CI/CD on push
-**Integrations:** Google OAuth, Groq LLM (chatbot + translation), RapidAPI (live status)
+**Integrations:** Google OAuth, Groq LLM (chatbot + translation), MapTiler (map tiles), RapidAPI (live status)
 
 ---
 
@@ -140,6 +146,8 @@ Set these in `backend/.env` (git-ignored):
 - `POST /api/auth/register/`, `/login/`, `/refresh/`, `/me/` for JWT auth
 - `GET  /api/health/` for service health
 - `POST /api/predict/confirmation/`, `/api/predict/delay/`, `/api/predict/rank/` for ML proxies
+- `GET  /api/trains/<number>/route/` for a train's route geometry, computed stats and interpolated live position
+- `GET  /api/radar/` for the full fleet of running trains with live positions and headings
 - Train search, PNR, live status and booking endpoints under `/api/`
 
 ---
