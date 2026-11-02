@@ -137,16 +137,16 @@ Set these in `backend/.env` (git-ignored):
 
 ## Selected API endpoints
 
-- `POST /api/auth/register/`, `/login/`, `/refresh/`, `/me/` — JWT auth
-- `GET  /api/health/` — service health
-- `POST /api/predict/confirmation/`, `/api/predict/delay/`, `/api/predict/rank/` — ML proxies
+- `POST /api/auth/register/`, `/login/`, `/refresh/`, `/me/` for JWT auth
+- `GET  /api/health/` for service health
+- `POST /api/predict/confirmation/`, `/api/predict/delay/`, `/api/predict/rank/` for ML proxies
 - Train search, PNR, live status and booking endpoints under `/api/`
 
 ---
 
 ## Author
 
-**Rishi Raj Das** — B.Tech Information Technology, MITS Gwalior
+**Rishi Raj Das**, B.Tech Information Technology, MITS Gwalior
 GitHub: [github.com/rishirajdas05](https://github.com/rishirajdas05)
 
 Built as an independent portfolio project. The engineering is real; the railway numbers are synthetic, by design.
